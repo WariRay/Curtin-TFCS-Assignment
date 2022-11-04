@@ -60,75 +60,16 @@ public class Solution {
     //public static List<List<Vertex>> comb(List<List<Vertex>> allEdgePairs, int len, int startIdx, List<List<Vertex>> inSpanningTree, int treeLength){
         //List<List<Vertex>> allSpanningTrees = new ArrayList<>();
     public static List<Vertex> comb(List<List<Vertex>> allEdgePairs, int len, int startIdx, List<Vertex> allSpanningTrees, int treeLength){
-        // List<Vertex> allSpanningTrees = new ArrayList<>();
 
         if (len == 0){
-            // System.out.println("ENTER IF STATEMENT");
             return allSpanningTrees;
         }       
         for (int ii = 0; ii <= allEdgePairs.size() - len; ii++){
-            // System.out.println("size " + allEdgePairs.size());
-            // System.out.println("V " + allEdgePairs.get(ii).get(0).getLabel());
-            // System.out.println("V " + allEdgePairs.get(ii).get(1).getLabel());
-            // System.out.println("add");
             int index = treeLength - len;
             allSpanningTrees.add(index, allEdgePairs.get(ii).get(0));
             allSpanningTrees.add(index, allEdgePairs.get(ii).get(1));
-            //allSpanningTrees.get(index).add(allEdgePairs.get(ii).get(ii));
             comb(allEdgePairs, len-1, ii+1, allSpanningTrees, treeLength);
         }
         return allSpanningTrees;
     }
-
-    // public static Set<Set<Vertex>> comb(Set<Set<Vertex>> allEdgePairs, int len, int startPosition, Set<Set<Vertex>> inSpanningTree){
-    //     Set<Set<Vertex>> allST = new HashSet<>();
-    //     Set<Vertex> spanningT = new HashSet<>(len);
-
-    //     if (len == 0){
-    //         return allST;
-    //     }       
-    //     for (int ii = startPosition; ii <= allEdgePairs.size() - len; ii++){
-    //         // spanningTree.get(inSpanningTree.size() - len) = inEdgePairSet.get(ii);
-    //         int nextIndex = spanningT.size() - len;
-    //         spanningT.get(nextIndex).add(allEdgePairs.get(ii).get(ii));
-    //         //allST.get(ii).get(ii) = inEdgePairSet.get(ii).get(ii);
-    //         comb(allEdgePairs, len-1, ii+1, allST);
-    //     }
-
-    //     return allST;
-    // }
 }
-
-
-// if (len == 0){
-//     System.out.println("ENTER IF STATEMENT");
-//     allSpanningTrees.add(inSpanningTree);
-//     // allSpanningTrees.add(e)
-//     return allSpanningTrees;
-// }       
-// for (int ii = 0; ii <= allEdgePairs.size() - len; ii++){
-//     System.out.println("len: " + len);
-//     int index = treeLength - len;
-//     allSpanningTrees.get(index).add(allEdgePairs.get(ii).get(ii));
-//     //allSpanningTrees.add(index, allEdgePairs.get(ii).get(ii));
-//     // System.out.println("+ index: " + index);
-//     // inSpanningTree.add(index, allEdgePairs.get(ii).get(ii));
-//     // inSpanningTree.add(index, allEdgePairs.get(ii).get(ii));
-//     // for (int jj = 0; jj <= treeLength; jj++)
-//     // {
-//     //     Vertex src;
-//     //     Vertex dest;
-//     //     List<Vertex> pair = new ArrayList<>();
-//     //     src = allEdgePairs.get(jj).get(0);
-//     //     dest = allEdgePairs.get(jj).get(1);
-//     //     pair.add(src);
-//     //     pair.add(dest);
-//     //     inSpanningTree.add(pair);
-//     // }
-//     // allSpanningTrees = comb(allEdgePairs, len-1, ii+1, inSpanningTree, treeLength);
-//     // System.out.println("SPT size: " + inSpanningTree.size());
-//     // allSpanningTrees.get(index).add(allEdgePairs.get(ii).get(ii));
-//     //inSpanningTree.add(allEdgePairs.get(ii).get(ii));
-//     // allSpanningTrees = comb(allEdgePairs, len-1, ii+1, inSpanningTree, treeLength);
-// }
-// return allSpanningTrees;
