@@ -23,6 +23,13 @@
 
 \input{structure.tex} % Include the file specifying the document structure and custom commands
 
+\usepackage[
+style=ieee,
+backend=biber
+]{biblatex}
+\addbibresource{references.bib}
+
+
 %----------------------------------------------------------------------------------------
 %	ASSIGNMENT INFORMATION
 %----------------------------------------------------------------------------------------
@@ -35,7 +42,7 @@
     }
 } % Title of the assignment
 
-\author{Warittha Rayabsri (TODO), Kristian Rados (TODO), Moritz Bergemann (TODO)} % Author name and email address
+\author{Moritz Bergemann (19759948), Kristian Rados (19764285), Warittha Rayabsri (19747859)} % Author name and email address
 
 \date{\today}
 
@@ -49,7 +56,7 @@
 %	INTRODUCTION
 %----------------------------------------------------------------------------------------
 
-\section*{Introduction} % Unnumbered section
+\section{Executive Summary} % Unnumbered section
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent porttitor arcu luctus, imperdiet urna iaculis, mattis eros. Pellentesque iaculis odio vel nisl ullamcorper, nec faucibus ipsum molestie. Sed dictum nisl non aliquet porttitor. Etiam vulputate arcu dignissim, finibus sem et, viverra nisl. Aenean luctus congue massa, ut laoreet metus ornare in. Nunc fermentum nisi imperdiet lectus tincidunt vestibulum at ac elit. Nulla mattis nisl eu malesuada suscipit.
 
@@ -59,6 +66,260 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent porttitor arcu
 \end{equation}
 
 Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh. Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor.
+
+%----------------------------------------------------------------------------------------
+%	QUESTION DEFINITION
+%----------------------------------------------------------------------------------------
+\section{Question Definition}
+
+\subsection{Provided Question}
+The following is the question as detailed in the specification. Some details irrelevant to the problem have been removed.
+
+\begin{question}[Question \#14 - Beam Me Down Scotty]
+	Write some software to find the best way to link some communication ground stations. \\
+	The ground stations must communicate with each other. There is a limited budget, so communication must be done as cheaply as possible. \\
+	You will be given a graph to hide the actual locations (vertices) and communication channels (edges) but you will be given a scaled version of the costs for each channel (edge). \\
+	In essence, there needs to be a path of communication methods between any pair of locations and the overall costs of the communication channels should be minimized. \\
+\end{question}
+
+\subsection{Conversion to a decision problem}
+
+An analysis of the question reveals the following base requirements:
+
+\begin{itemize}
+	\item Input is given in the form of a weighted graph (vertices plus with edges that have costs).
+	\item The algorithm must choose a subset of edges to “build” the network (a subset of edges will be selected).
+	\item The selected subset of edges must connect each pair of vertices in the graph through some sequence of edges.
+\end{itemize}
+
+These requirements match the definition of an existing problem - the identification of \textbf{minimum spanning trees} (MSTs) \cite{sedgewick_minimum_2018}.
+
+Using this intuition, we can simplify the problem further:
+
+ % TODO
+
+%----------------------------------------------------------------------------------------
+%	SOLUTIONS TO THE PROBLEM
+%----------------------------------------------------------------------------------------
+\section{Solutions to The Problem}
+
+%----------------------------------------------------------------------------------------
+%	TURING MACHINE
+%----------------------------------------------------------------------------------------
+\section{Turing Machine Solution}
+\section{Turing Machine Implementation}
+
+The following is a Turing Machine implementation of Prim's algorithm.
+
+Notes for understanding the TM:
+\begin{itemize}
+	\item 7. and 8. effectively check whether an edge would add a new (unvisited) vertex to the MST and is connected to the current MST. In other words, one of the edge's vertices must be visited, but not both.
+	\item This turing machine is functional with an arbitrary number of vertices and edges, and arbitrary (integer) edge weights.
+\end{itemize}
+
+ % Turing machine start
+\begin{lstlisting}[frame=single]
+The machine contains the following tapes:
+- Input tape
+- Visited tape 
+- Current_Minimum tape
+- Minimum_Spanning_Tree tape
+- Minimum_Spanning_Tree_Cost tape
+- Misc tape
+ 
+ 
+######################
+## INPUT VALIDATION ##
+######################
+## Input will be in the following format:
+## A representation of a tree as a set of vertex names (which 
+##     must be alphabetical letters), 
+##     followed by a set of weighted edges (where weights are in 
+##     binary) followed by an input number k (in binary)
+## For example: (A, B, C), ((A, B, 01), (B, C, 10), (A, C, 11)), 110
+##     (spacing only for clarity)
+# NOTE: We will use the visited tape to keep track of which vertices we
+#     have seen already
+0. SPECIAL RULES:
+    - If we are moving right until we find something and we reach
+        the end of the tape, reject unless otherwise specified.
+# Checking vertices
+1. Check value at Input tape. If not '(', Reject.
+2. Move right on Input tape. If value is not alphabetical letter, 
+        reject.
+4. Move right on Input tape until ',' or ')' found. Reject if anything
+        inbetween is not alphabetical letter.
+5. Move left on Input tape until ',' or '(' found. Move right. 
+        Perform VISIT_VERTEX.
+6. Move right on Input tape until ',' or ')' found.
+        - If ',' found, go to 2.
+        - If ')' found, go to 7.
+
+# Checking edges
+7. Move right on Input tape. If value not ',' Reject. Move right. 
+        If value not '(', Reject. Move right.
+8. If value not '(', Reject. Move right until ',' found. If anything
+        inbetween is not alphabetical letter, reject.
+9. Move left until '(' found. Perform CHECK_VISITED. If no, Reject.
+10. Move right until ',' found.
+11. Move right until ',' found. If anything inbetween is not 
+        alphabetical letter, Reject.
+12. Move left until ',' found. Perform CHECK_VISITED. If no, Reject.
+13. Move right until ',' found. Move right.
+14. Move right until ')' found. If anything between is not binary, 
+        Reject.
+15. Move right. 
+        - If value is ')', Go to 16.
+        - If value is ',', move right. Go to 8.
+        - For any other value, reject.
+
+# Check k
+16. Move right. If value not ',', Reject.
+17. Move right until end of tape reached. 
+            If anything between is not binary, reject.
+18. Clear all tapes besides Input tape. Move to beginning of Input 
+        tape.
+
+
+##################
+## MAIN PROGRAM ##
+##################
+0. Perform INPUT VALIDATION.
+1. Move right on Input tape. Perform VISIT_VERTEX.
+2. Write 0 to the minimum spanning tree cost tape.
+
+3. Move to beginning of Input tape. Move right on Input tape until 
+    third '(' found. (Move to first edge)
+4. Write 'INF' to Current_Minimum tape
+5. Move right on Input tape (moving to edge's first vertex name). 
+        Perform CHECK_VISITED.
+        - If yes, go to 6.
+        - If no, go to 7.
+6. Move right on Input tape (moving to edge's second vertex name). 
+        Perform CHECK_VISITED.
+        - If no, perform CHECK_CURRENT_MINIMUM
+        - Go to 8.
+7. Move right on Input tape (moving to edge's second vertex name). 
+        Perform CHECK_VISITED.
+        - If yes, perform CHECK_CURRENT_MINIMUM.
+        - Go to 8.
+8. move right on Input tape until '(' found (next edge). Go to 5.
+        - If no '(' found before end of Input tape, go to 9.
+9. If Current_Minimum tape contains 'INF', go to 11.
+10. Perform ADD_TO_MST. Go to 3.
+
+# Calculate cost of identified minimum spanning tree
+11. Move to beginning of Minimum_Spanning_Tree tape. Move to beginning
+        of Minimum_Spanning_Tree_Cost tape.
+12. Move right on Minimum_Spanning_Tree tape until '(' found, 
+        unless already at '('. Move right on Minimum_Spanning_Tree tape
+        until second ',' found, then move right again. If the end of 
+        the tape is reached, 
+        go to 14.
+13. Perform ADDITION(Minimum_Spanning_Tree, Minimum_Spanning_Tree_Cost). 
+        Move to beginning of Minimum_Spanning_Tree_Cost tape. Go to 12.
+
+14. Go to beginning of Minimum_Spanning_Tree_Cost tape.
+15. Move to end of Input tape, then move left until ',' found, then 
+        move right.
+16. Perform LESS_THAN(Minimum_Spanning_Tree_Cost, Input).
+        - If yes, Accept.
+        - If no, Reject.
+
+
+#################
+## SUBROUTINES ##
+#################
+VISIT_VERTEX:
+## Adds the vertex at Input tape to Visited tape.
+1. Move to the beginning of Input tape and end of Visited tape.
+2. Move right on Visited tape, write ','
+3. Move right on Visited tape.
+4. Write the value on the Input tape to the Visited tape.
+5. Move right on Input tape.
+        - If Input tape value is ',', end.
+        - Otherwise, go to 4.
+
+CHECK_VISITED:
+## Returns yes or no depending on if vertex name at Input tape is in 
+    Visited tape.
+1. Move to beginning of Visited tape.
+
+# Comparison operation
+2. Clear and move to beginning of Misc tape.
+3. Check if value at Input tape and Visited tape are the same. # Do 
+        once first to read in first value
+        - If yes, move right on Input and Visited tape. Write 'X' to
+            Misc tape and move right. Go to 4.
+        - If no, go to XXX.
+4. Check if value at Visited tape is ',' or end of tape. # If end of
+        visited label
+        - If no, go to 5.
+        - If yes, go to 6. 
+5. Check if value at Input tape and Visited tape are the same.
+        - If yes, move right on Input and Visited tape. Write 'X' to
+            Misc tape and move right. Go to 4.
+        - If no, go to XXX.
+6. If value at Input tape is ',' or ')', Return Yes. Otherwise, go to 7.
+# Fail, check next
+7. Move left on Input tape for every 'X' on Misc tape. Move right on 
+        input tape until ',' found, unless we are already at a ','. 
+        - If we reach the end of the tape before finding a ',', 
+            Return No.
+
+
+CHECK_CURRENT_MINIMUM:
+## Checks if the cost of the edge Input tape is currently at is less 
+##   than cost of edge in Current_Minimum tape. If yes, replaces 
+## Current_Minimum tape's value with the one at the Input tape.
+1. Move to beginning of Current_Minimum tape.
+2. If Current_Minimum contains 'INF', go to XXX
+3. Perform LESS_THAN(Input, Current_Minimum)
+        - If yes, go to 4.
+        - If no, end.
+# Make this edge the current minimum edge
+4. Move left on Input tape until '(' found.
+5. Clear Current_Minimum tape, move to beginning of Current_Minimum 
+        tape.
+6. Write value at Input tape to Current_Minimum tape. Move right on 
+        Input and Current_Minimum tape. 
+        - Repeat until Input contains ')'  
+7. Move to beginning of Current_Minimum tape.
+
+
+ADD_TO_MST:
+## Adds the vertex to the currently tracked minimum spanning tree, 
+##     and visits the unvisited vertex it contained.
+1. Move to end of Minimum_Spanning_Tree tape.
+2. On Minimum_Spanning_Tree tape: Move right, write ',', move right
+3. Write value on Input tape to Minimum_Spanning_Tree tape, move right 
+        on both. Repeat until Input tape contains ')', then perform
+        write one more time.
+4. Move left on Input tape until '(' found. Move right.
+5. Perform CHECK_VISITED.
+        # If first vertex in edge wasn't visited
+        - If no, move left on Input tape until '(' found. Move right.
+        # If second vertex in edge wasn't visited
+        - If yes, move right on Input tape until ',' found. Move right.
+6. Perform VISIT_VERTEX.
+
+
+ADDITION(Tape_1, Tape_2):
+## Adds the binary value starting at Tape_1 to Tape_2, overwriting the
+##  value in Tape_2 with the result.
+##  If the new value requires more digits for representation, all 
+##  values in Tape_2 are shuffled to account for this.
+Addition of binary values done as in TODO
+
+
+LESS_THAN(Tape_1, Tape_2):
+## Checks if the binary value at Tape_1 is less than the binary value
+##  at Tape_1.
+##  Gives Yes or No answer.
+##  (Note: Assuming binary values are continued to be read until 
+##  non-binary value found on a tape)
+Comparison of binary values done as in TODO
+\end{lstlisting}
 
 \begin{info} % Information block
 	This is an interesting piece of information, to which the reader should pay special attention. Fusce varius orci ac magna dapibus porttitor. In tempor leo a neque bibendum sollicitudin. Nulla pretium fermentum nisi, eget sodales magna facilisis eu. Praesent aliquet nulla ut bibendum lacinia. Donec vel mauris vulputate, commodo ligula ut, egestas orci. Suspendisse commodo odio sed hendrerit lobortis. Donec finibus eros erat, vel ornare enim mattis et.
@@ -166,5 +427,97 @@ Vestibulum sodales orci a nisi interdum tristique. In dictum vehicula dui, eget 
 \end{warn}
 
 %----------------------------------------------------------------------------------------
+
+\printbibliography
+
+%----------------------------------------------------------------------------------------
+
+\section*{Appendices}
+\subsection*{Appendix A - Unoptimised Pseudocode Solution}
+
+% TODO
+
+\subsection*{Appendix B - Unoptimised Java Solution}
+
+% TODO
+
+\subsection*{Appendix C - Optimised Pseudocode Solution}
+
+% TODO
+
+\subsection*{Appendix D - Non-Decidable Proof via Pumping Lemma}
+
+We here use the pumping lemma for context-free languages to prove this is not a context-free problem.
+
+Let $L$ be the language described as follows:
+A representation of a weighted graph $G$ as a series of vertices followed by a series of weighted edges, using the following syntax:
+
+\begin{itemize}
+	\item A representation of a weighted graph $G$ as a series of vertices followed by a series of weighted edges, using the following syntax:
+    
+    \begin{align*}
+		S &= (V), (E), I \\
+		V &= V,V \textrm{ } | \textrm{ } I \\
+		E &= E,E \textrm{ } | \textrm{ } (I, I, I) \\
+		I &= \langle 0-9 \rangle \textrm{ } | \textrm{ } II
+    \end{align*}
+    
+    \begin{itemize}
+		\item The graph representation must represent a valid graph - vertices are unique, and edges are only between vertices that exist in the graph (not possible in CFG)
+	\end{itemize}
+
+	\item The graph representation is followed by a single number, $k$
+	\item $k$ must be greater than or equal to the cost of the minimum spanning tree of $G$
+	\item For example: $(1, 2, 3),((1, 3, 2), (1, 2, 2), (2, 3, 3)), 4$ is in the language
+\end{itemize}
+
+We assume $L$ is context-free
+
+$\implies\exists\textrm{ } p > 0$ s.t. all strings $s \in L$ can be split into $xyzvw$, s.t.:
+
+\begin{enumerate}
+	\item $|yzv| \leq p$
+	\item $|yv| > 0$
+	\item $\forall i \geq 0, x y^i z v^i w \in L$
+\end{enumerate}
+
+We choose $s = (1, 2, 3), ([(1,2,1),]^p (2,3,2)), 3$ where $($ and $)$ are characters in the input alphabet but $[$ and $]$ are not
+
+For simplicity:
+
+Let $A$ be the first sequence of $(1,2,3),($ in $s$
+
+Let $B$ be the middle  $[(1,2,1),]^p$ in $s$
+
+Let $C$ be the final $(2,3,2)), 3$ in $s$
+
+From (1), $yzv$ spans only across at most two adjacent of the three sequences $A$, $B$, and $C$
+
+From (2), $yv$ is not empty, so there are five total cases in which $yzv$ can only span parts of:
+
+\begin{enumerate}
+	\item $A$
+	\item $A$ and $B$
+	\item $B$
+	\item $B$ and $C$
+	\item $C$
+	\end{enumerate}
+
+Pumping $y$ and $v$ to give $s'$ in all cases results in some $s' \notin L$, violating condition (3):
+
+\begin{itemize}
+	\item \textit{Cases 1 and 2:} \\
+	Pumping anything in $A$ (removal or addition) with $i \neq 1$ will break the syntax of the graph
+	\item \textit{Case 3:} \\ 
+	Pumping $B$ down to $i=0$ will remove the valid MST, escaping the language
+	\item \textit{Cases 4 and 5:} \\
+	Pumping anything in $C$ with $i \neq 1$ will break the syntax of the graph
+\end{itemize}
+
+$\implies$ The pumping lemma is invalid
+
+$\therefore$ By contradiction, the language is not context-free
+
+$\therefore$ The problem is Tier 3 - Turing-decidable or higher
 
 \end{document}
